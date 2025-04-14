@@ -1,21 +1,21 @@
 package org.example;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
 
-    @Test
-    void appHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+    private App game;
+
+    @BeforeEach
+    void setUp() {
+        game = new App();
+        game.initializeBoard();
     }
 
     @Test
     void testInitializeBoard() {
-        App game = new App();
-        game.initializeBoard();
-
         char[][] board = game.getBoard();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -26,12 +26,11 @@ class AppTest {
 
     @Test
     void testMakeMove() {
-        App game = new App();
-        game.initializeBoard();
-
+        // First move should be X
         game.makeMove(5);
         assertEquals('X', game.getBoard()[1][1], "Cell 5 should be marked with X.");
 
+        // After switch, next move should be O
         game.switchPlayer();
         game.makeMove(1);
         assertEquals('O', game.getBoard()[0][0], "Cell 1 should be marked with O.");
@@ -39,53 +38,55 @@ class AppTest {
 
     @Test
     void testCheckWin() {
-        App game = new App();
-        game.initializeBoard();
-
-<<<<<<< HEAD
-=======
-        // Simulate a winning condition for Player X
->>>>>>> 6fb8d3f9360bedb3fde34172617afcd15603b4d3
-        game.makeMove(1);
-        game.makeMove(4);
-        game.makeMove(2);
-        game.makeMove(5);
-<<<<<<< HEAD
-        game.makeMove(3); 
-=======
-        game.makeMove(3);
->>>>>>> 6fb8d3f9360bedb3fde34172617afcd15603b4d3
+        // First move X
+        game.makeMove(1); // X
+        assertEquals('X', game.getCurrentPlayer());
+        
+        game.switchPlayer();
+        game.makeMove(4); // O
+        assertEquals('O', game.getCurrentPlayer());
+        
+        game.switchPlayer();
+        game.makeMove(2); // X
+        assertEquals('X', game.getCurrentPlayer());
+        
+        game.switchPlayer();
+        game.makeMove(5); // O
+        assertEquals('O', game.getCurrentPlayer());
+        
+        game.switchPlayer();
+        game.makeMove(3); // X
 
         assertTrue(game.checkWin(), "Player X should win with a horizontal line.");
     }
 
     @Test
     void testIsBoardFull() {
-        App game = new App();
-        game.initializeBoard();
-
-<<<<<<< HEAD
-=======
-        // Fill the board without a winner
->>>>>>> 6fb8d3f9360bedb3fde34172617afcd15603b4d3
-        game.makeMove(1);
-        game.makeMove(2);
-        game.makeMove(3);
-        game.makeMove(4);
-        game.makeMove(5);
-        game.makeMove(6);
-        game.makeMove(7);
-        game.makeMove(8);
-        game.makeMove(9);
+        // Alternate moves between X and O
+        game.makeMove(1); // X
+        game.switchPlayer();
+        game.makeMove(2); // O
+        game.switchPlayer();
+        game.makeMove(3); // X
+        game.switchPlayer();
+        game.makeMove(4); // O
+        game.switchPlayer();
+        game.makeMove(5); // X
+        game.switchPlayer();
+        game.makeMove(6); // O
+        game.switchPlayer();
+        game.makeMove(7); // X
+        game.switchPlayer();
+        game.makeMove(8); // O
+        game.switchPlayer();
+        game.makeMove(9); // X
 
         assertTrue(game.isBoardFull(), "Board should be full.");
     }
 
     @Test
     void testSwitchPlayer() {
-        App game = new App();
-        game.initializeBoard();
-
+        // Initial player should be X
         assertEquals('X', game.getCurrentPlayer(), "Initial player should be X.");
 
         game.switchPlayer();

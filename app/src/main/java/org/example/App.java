@@ -7,20 +7,14 @@ import java.io.IOException;
 public class App {
 
     private char[][] board = new char[3][3];
-    private char currentPlayer = 'X';
+    private char currentPlayer;
     private Scanner scanner = new Scanner(System.in);
     private int xWins = 0;
     private int oWins = 0;
     private int ties = 0;
     private char lastLoser = 'O'; // Default to 'O' so X starts first initially
 
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
-        App app = new App();
-        System.out.println(app.getGreeting());
         playGame();
     }
 
@@ -42,12 +36,14 @@ public class App {
                     System.out.println("Player " + game.getCurrentPlayer() + " wins!");
                     game.updateStats(game.getCurrentPlayer());
                     game.printStats();
-                    game.lastLoser = (game.getCurrentPlayer() == 'X') ? 'O' : 'X';
+                    // Set lastLoser to the winning player
+                    game.lastLoser = game.getCurrentPlayer();
                     gameOver = true;
                 } else if (game.isBoardFull()) {
                     System.out.println("It's a draw!");
                     game.updateStats('T');
                     game.printStats();
+                    // Don't change lastLoser for a tie
                     gameOver = true;
                 } else {
                     game.switchPlayer();
@@ -95,12 +91,12 @@ public class App {
                 board[i][j] = ' ';
             }
         }
-        // Set the current player based on who lost last game
-        currentPlayer = lastLoser;
-        if (lastLoser == 'O') {
-            System.out.println("\nGreat! This time X will go first!");
+        // Set current player to opposite of last loser
+        currentPlayer = (lastLoser == 'X') ? 'O' : 'X';
+        if (currentPlayer == 'X') {
+            System.out.println("\nPlayer X goes first!");
         } else {
-            System.out.println("\nGreat! This time O will go first!");
+            System.out.println("\nPlayer O goes first!");
         }
     }
 
