@@ -42,11 +42,19 @@ class AppTest {
         App game = new App();
         game.initializeBoard();
 
+<<<<<<< HEAD
+=======
+        // Simulate a winning condition for Player X
+>>>>>>> 6fb8d3f9360bedb3fde34172617afcd15603b4d3
         game.makeMove(1);
         game.makeMove(4);
         game.makeMove(2);
         game.makeMove(5);
+<<<<<<< HEAD
         game.makeMove(3); 
+=======
+        game.makeMove(3);
+>>>>>>> 6fb8d3f9360bedb3fde34172617afcd15603b4d3
 
         assertTrue(game.checkWin(), "Player X should win with a horizontal line.");
     }
@@ -56,6 +64,10 @@ class AppTest {
         App game = new App();
         game.initializeBoard();
 
+<<<<<<< HEAD
+=======
+        // Fill the board without a winner
+>>>>>>> 6fb8d3f9360bedb3fde34172617afcd15603b4d3
         game.makeMove(1);
         game.makeMove(2);
         game.makeMove(3);
