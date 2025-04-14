@@ -1,12 +1,18 @@
 package org.example;
 
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class App {
 
     private char[][] board = new char[3][3];
     private char currentPlayer = 'X';
     private Scanner scanner = new Scanner(System.in);
+    private int xWins = 0;
+    private int oWins = 0;
+    private int ties = 0;
+    private char lastLoser = 'O'; // Default to 'O' so X starts first initially
 
     public String getGreeting() {
         return "Hello World!";
@@ -34,9 +40,14 @@ public class App {
 
                 if (game.checkWin()) {
                     System.out.println("Player " + game.getCurrentPlayer() + " wins!");
+                    game.updateStats(game.getCurrentPlayer());
+                    game.printStats();
+                    game.lastLoser = (game.getCurrentPlayer() == 'X') ? 'O' : 'X';
                     gameOver = true;
                 } else if (game.isBoardFull()) {
                     System.out.println("It's a draw!");
+                    game.updateStats('T');
+                    game.printStats();
                     gameOver = true;
                 } else {
                     game.switchPlayer();
@@ -45,7 +56,37 @@ public class App {
 
             playAgain = game.askToPlayAgain();
         }
+        game.saveGameLog();
         System.out.println("Goodbye!");
+    }
+
+    private void updateStats(char winner) {
+        if (winner == 'X') {
+            xWins++;
+        } else if (winner == 'O') {
+            oWins++;
+        } else {
+            ties++;
+        }
+    }
+
+    private void printStats() {
+        System.out.println("\nThe current log is:\n");
+        System.out.printf("Player X Wins   %d\n", xWins);
+        System.out.printf("Player O Wins   %d\n", oWins);
+        System.out.printf("Ties            %d\n\n", ties);
+    }
+
+    private void saveGameLog() {
+        try (FileWriter writer = new FileWriter("game.txt")) {
+            writer.write("Final Game Statistics:\n\n");
+            writer.write(String.format("Player X Wins   %d\n", xWins));
+            writer.write(String.format("Player O Wins   %d\n", oWins));
+            writer.write(String.format("Ties            %d\n", ties));
+            System.out.println("Writing the game log to disk. Please see game.txt for the final statistics!");
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the game log.");
+        }
     }
 
     public void initializeBoard() {
@@ -53,6 +94,13 @@ public class App {
             for (int j = 0; j < 3; j++) {
                 board[i][j] = ' ';
             }
+        }
+        // Set the current player based on who lost last game
+        currentPlayer = lastLoser;
+        if (lastLoser == 'O') {
+            System.out.println("\nGreat! This time X will go first!");
+        } else {
+            System.out.println("\nGreat! This time O will go first!");
         }
     }
 
