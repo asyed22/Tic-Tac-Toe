@@ -5,94 +5,87 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
-
-    private App game;
+    private Board board;
+    private HumanPlayer humanPlayer;
+    private ComputerPlayer computerPlayer;
 
     @BeforeEach
     void setUp() {
-        game = new App();
-        game.initializeBoard();
+        board = new Board();
+        humanPlayer = new HumanPlayer('X');
+        computerPlayer = new ComputerPlayer('O');
     }
 
     @Test
-    void testInitializeBoard() {
-        char[][] board = game.getBoard();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                assertEquals(' ', board[i][j], "Board should be initialized with empty cells.");
-            }
+    void testHumanPlayerInitialization() {
+        assertEquals('X', humanPlayer.getSymbol());
+    }
+
+    @Test
+    void testComputerPlayerInitialization() {
+        assertEquals('O', computerPlayer.getSymbol());
+    }
+
+    @Test
+    void testEmptyBoardInitialization() {
+        for (int i = 1; i <= 9; i++) {
+            assertTrue(board.isCellEmpty(i));
         }
     }
 
     @Test
-    void testMakeMove() {
-        // First move should be X
-        game.makeMove(5);
-        assertEquals('X', game.getBoard()[1][1], "Cell 5 should be marked with X.");
-
-        // After switch, next move should be O
-        game.switchPlayer();
-        game.makeMove(1);
-        assertEquals('O', game.getBoard()[0][0], "Cell 1 should be marked with O.");
+    void testHumanPlayerMove() {
+        // Simulate human move (in real test would mock input)
+        int move = humanPlayer.makeMove(board);
+        assertTrue(move >= 1 && move <= 9);
+        assertTrue(board.isCellEmpty(move)); // Move not actually made yet
     }
 
     @Test
-    void testCheckWin() {
-        // First move X
-        game.makeMove(1); // X
-        assertEquals('X', game.getCurrentPlayer());
-        
-        game.switchPlayer();
-        game.makeMove(4); // O
-        assertEquals('O', game.getCurrentPlayer());
-        
-        game.switchPlayer();
-        game.makeMove(2); // X
-        assertEquals('X', game.getCurrentPlayer());
-        
-        game.switchPlayer();
-        game.makeMove(5); // O
-        assertEquals('O', game.getCurrentPlayer());
-        
-        game.switchPlayer();
-        game.makeMove(3); // X
-
-        assertTrue(game.checkWin(), "Player X should win with a horizontal line.");
+    void testComputerFirstMoveIsCorner() {
+        int move = computerPlayer.makeMove(board);
+        assertTrue(move == 1 || move == 3 || move == 7 || move == 9);
     }
 
     @Test
-    void testIsBoardFull() {
-        // Alternate moves between X and O
-        game.makeMove(1); // X
-        game.switchPlayer();
-        game.makeMove(2); // O
-        game.switchPlayer();
-        game.makeMove(3); // X
-        game.switchPlayer();
-        game.makeMove(4); // O
-        game.switchPlayer();
-        game.makeMove(5); // X
-        game.switchPlayer();
-        game.makeMove(6); // O
-        game.switchPlayer();
-        game.makeMove(7); // X
-        game.switchPlayer();
-        game.makeMove(8); // O
-        game.switchPlayer();
-        game.makeMove(9); // X
-
-        assertTrue(game.isBoardFull(), "Board should be full.");
+    void testComputerBlocksHumanWin() {
+        // Setup human almost winning
+        board.setCell(1, 'X');
+        board.setCell(2, 'X');
+        int move = computerPlayer.makeMove(board);
+        assertEquals(3, move);
     }
 
     @Test
-    void testSwitchPlayer() {
-        // Initial player should be X
-        assertEquals('X', game.getCurrentPlayer(), "Initial player should be X.");
+    void testComputerTakesWinWhenAvailable() {
+        // Setup computer almost winning
+        board.setCell(1, 'O');
+        board.setCell(2, 'O');
+        int move = computerPlayer.makeMove(board);
+        assertEquals(3, move);
+    }
 
-        game.switchPlayer();
-        assertEquals('O', game.getCurrentPlayer(), "Player should switch to O.");
+    @Test
+    void testGameWinDetection() {
+        board.setCell(1, 'X');
+        board.setCell(2, 'X');
+        board.setCell(3, 'X');
+        assertTrue(board.checkWin('X'));
+    }
 
-        game.switchPlayer();
-        assertEquals('X', game.getCurrentPlayer(), "Player should switch back to X.");
+    @Test
+    void testGameDrawDetection() {
+        board.setCell(1, 'X');
+        board.setCell(2, 'O');
+        board.setCell(3, 'X');
+        board.setCell(4, 'X');
+        board.setCell(5, 'O');
+        board.setCell(6, 'O');
+        board.setCell(7, 'O');
+        board.setCell(8, 'X');
+        board.setCell(9, 'X');
+        assertTrue(board.isFull());
+        assertFalse(board.checkWin('X'));
+        assertFalse(board.checkWin('O'));
     }
 }
