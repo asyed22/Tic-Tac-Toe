@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Scanner;
 
 class HumanPlayerTest {
     private final InputStream systemIn = System.in;
@@ -13,7 +14,7 @@ class HumanPlayerTest {
         String input = "5\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         
-        HumanPlayer player = new HumanPlayer('X');
+        HumanPlayer player = new HumanPlayer('X', new Scanner(System.in));
         Board board = new Board();
         int move = player.makeMove(board);
         
@@ -26,7 +27,7 @@ class HumanPlayerTest {
         String input = "10\n5\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         
-        HumanPlayer player = new HumanPlayer('X');
+        HumanPlayer player = new HumanPlayer('X', new Scanner(System.in));
         Board board = new Board();
         int move = player.makeMove(board);
         

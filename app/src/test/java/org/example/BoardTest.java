@@ -16,6 +16,7 @@ class BoardTest {
     void testInitialBoardIsEmpty() {
         for (int i = 1; i <= 9; i++) {
             assertTrue(board.isCellEmpty(i));
+            assertEquals(' ', board.getCell(i));
         }
     }
 
@@ -23,13 +24,15 @@ class BoardTest {
     void testSetAndGetCell() {
         board.setCell(5, 'X');
         assertFalse(board.isCellEmpty(5));
-        assertEquals('X', board.getCell(4)); // 0-based index
+        assertEquals('X', board.getCell(5));
     }
 
     @Test
     void testInvalidPositionThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> board.setCell(0, 'X'));
         assertThrows(IllegalArgumentException.class, () -> board.setCell(10, 'O'));
+        assertThrows(IllegalArgumentException.class, () -> board.getCell(0));
+        assertThrows(IllegalArgumentException.class, () -> board.getCell(10));
     }
 
     @Test

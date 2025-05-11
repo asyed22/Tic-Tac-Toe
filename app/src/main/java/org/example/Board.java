@@ -31,9 +31,17 @@ public class Board {
     }
 
     public void setCell(int position, char symbol) {
-        if (position >= 1 && position <= 9) {
-            board[position - 1] = symbol;
+        if (position < 1 || position > 9) {
+            throw new IllegalArgumentException("Position must be between 1 and 9");
         }
+        board[position - 1] = symbol;
+    }
+
+    public char getCell(int position) {
+        if (position < 1 || position > 9) {
+            throw new IllegalArgumentException("Position must be between 1 and 9");
+        }
+        return board[position - 1];
     }
 
     public boolean isFull() {
@@ -44,9 +52,14 @@ public class Board {
     }
 
     public boolean checkWin(char symbol) {
-        return (checkLine(0, 1, 2, symbol) || checkLine(3, 4, 5, symbol) || checkLine(6, 7, 8, symbol) ||
-                checkLine(0, 3, 6, symbol) || checkLine(1, 4, 7, symbol) || checkLine(2, 5, 8, symbol) ||
-                checkLine(0, 4, 8, symbol) || checkLine(2, 4, 6, symbol));
+        return (checkLine(0, 1, 2, symbol) || 
+                checkLine(3, 4, 5, symbol) || 
+                checkLine(6, 7, 8, symbol) ||
+                checkLine(0, 3, 6, symbol) || 
+                checkLine(1, 4, 7, symbol) || 
+                checkLine(2, 5, 8, symbol) ||
+                checkLine(0, 4, 8, symbol) || 
+                checkLine(2, 4, 6, symbol));
     }
 
     private boolean checkLine(int a, int b, int c, char symbol) {

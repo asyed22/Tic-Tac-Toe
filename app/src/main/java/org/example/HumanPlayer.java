@@ -1,14 +1,13 @@
 package org.example;
-
 import java.util.Scanner;
 
 public class HumanPlayer implements Player {
     private char symbol;
     private Scanner scanner;
 
-    public HumanPlayer(char symbol) {
+    public HumanPlayer(char symbol, Scanner scanner) {
         this.symbol = symbol;
-        this.scanner = new Scanner(System.in);
+        this.scanner = scanner;
     }
 
     @Override

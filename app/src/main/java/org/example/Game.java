@@ -1,29 +1,32 @@
 package org.example;
+import java.util.Scanner;
 
 public class Game {
     private Board board;
     private Player player1;
     private Player player2;
+    private Scanner scanner;
 
-    public Game() {
-        board = new Board();
+    public Game(Scanner scanner) {
+        this.board = new Board();
+        this.scanner = scanner;
     }
 
     public void start(int gameChoice) {
         switch (gameChoice) {
             case 1:
-                player1 = new HumanPlayer('X');
-                player2 = new HumanPlayer('O');
+                player1 = new HumanPlayer('X', scanner);
+                player2 = new HumanPlayer('O', scanner);
                 System.out.println("\nHuman vs Human game started!");
                 break;
             case 2:
-                player1 = new HumanPlayer('X');
+                player1 = new HumanPlayer('X', scanner);
                 player2 = new ComputerPlayer('O');
                 System.out.println("\nHuman vs Computer (Human first)!");
                 break;
             case 3:
                 player1 = new ComputerPlayer('X');
-                player2 = new HumanPlayer('O');
+                player2 = new HumanPlayer('O', scanner);
                 System.out.println("\nComputer vs Human (Computer first)!");
                 break;
         }
