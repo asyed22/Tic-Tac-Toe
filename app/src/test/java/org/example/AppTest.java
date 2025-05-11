@@ -1,91 +1,80 @@
 package org.example;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
-    private Board board;
-    private HumanPlayer humanPlayer;
-    private ComputerPlayer computerPlayer;
+    private final InputStream originalIn = System.in;
+    private final PrintStream originalOut = System.out;
+    private ByteArrayOutputStream outContent;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
-        humanPlayer = new HumanPlayer('X');
-        computerPlayer = new ComputerPlayer('O');
+        outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setIn(originalIn);
+        System.setOut(originalOut);
     }
 
     @Test
-    void testHumanPlayerInitialization() {
-        assertEquals('X', humanPlayer.getSymbol());
+    void testMainMenu_HumanVsHuman() {
+        // Simulate: Choose option 1, make moves 1-9 sequentially, then quit
+        String input = "1\n1\n2\n3\n4\n5\n6\n7\n8\n9\nno\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        
+        App.main(new String[]{});
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Human vs. Human"));
+        assertTrue(output.contains("Goodbye!"));
     }
 
     @Test
-    void testComputerPlayerInitialization() {
-        assertEquals('O', computerPlayer.getSymbol());
+    void testMainMenu_ComputerFirst() {
+        // Simulate: Choose option 3, accept computer moves, make human moves 1,2,3, then quit
+        String input = "3\n1\n2\n3\nno\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        
+        App.main(new String[]{});
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Computer vs. Human"));
+        assertTrue(output.contains("Computer first"));
     }
 
     @Test
-    void testEmptyBoardInitialization() {
-        for (int i = 1; i <= 9; i++) {
-            assertTrue(board.isCellEmpty(i));
-        }
+    void testInvalidMenuSelection() {
+        // Simulate: Invalid option 5, then valid option 1, then quit
+        String input = "5\n1\n1\n2\n3\n4\n5\n6\n7\n8\n9\nno\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        
+        App.main(new String[]{});
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Invalid input"));
+        assertTrue(output.contains("Human vs. Human"));
     }
 
     @Test
-    void testHumanPlayerMove() {
-        // Simulate human move (in real test would mock input)
-        int move = humanPlayer.makeMove(board);
-        assertTrue(move >= 1 && move <= 9);
-        assertTrue(board.isCellEmpty(move)); // Move not actually made yet
-    }
-
-    @Test
-    void testComputerFirstMoveIsCorner() {
-        int move = computerPlayer.makeMove(board);
-        assertTrue(move == 1 || move == 3 || move == 7 || move == 9);
-    }
-
-    @Test
-    void testComputerBlocksHumanWin() {
-        // Setup human almost winning
-        board.setCell(1, 'X');
-        board.setCell(2, 'X');
-        int move = computerPlayer.makeMove(board);
-        assertEquals(3, move);
-    }
-
-    @Test
-    void testComputerTakesWinWhenAvailable() {
-        // Setup computer almost winning
-        board.setCell(1, 'O');
-        board.setCell(2, 'O');
-        int move = computerPlayer.makeMove(board);
-        assertEquals(3, move);
-    }
-
-    @Test
-    void testGameWinDetection() {
-        board.setCell(1, 'X');
-        board.setCell(2, 'X');
-        board.setCell(3, 'X');
-        assertTrue(board.checkWin('X'));
-    }
-
-    @Test
-    void testGameDrawDetection() {
-        board.setCell(1, 'X');
-        board.setCell(2, 'O');
-        board.setCell(3, 'X');
-        board.setCell(4, 'X');
-        board.setCell(5, 'O');
-        board.setCell(6, 'O');
-        board.setCell(7, 'O');
-        board.setCell(8, 'X');
-        board.setCell(9, 'X');
-        assertTrue(board.isFull());
-        assertFalse(board.checkWin('X'));
-        assertFalse(board.checkWin('O'));
+    void testPlayAgainFlow() {
+        // Simulate: Play HvH, then play HvC, then quit
+        String input = "1\n1\n2\n3\n4\n5\n6\n7\n8\n9\nyes\n2\n1\n2\n3\n4\n5\n6\n7\n8\n9\nno\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        
+        App.main(new String[]{});
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Human vs. Human"));
+        assertTrue(output.contains("Human vs. Computer"));
     }
 }

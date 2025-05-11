@@ -9,56 +9,48 @@ public class Game {
         board = new Board();
     }
 
-    public void start(int gameChoice) {  // Removed boolean parameter
+    public void start(int gameChoice) {
         switch (gameChoice) {
             case 1:
                 player1 = new HumanPlayer('X');
                 player2 = new HumanPlayer('O');
+                System.out.println("\nHuman vs Human game started!");
                 break;
             case 2:
                 player1 = new HumanPlayer('X');
                 player2 = new ComputerPlayer('O');
+                System.out.println("\nHuman vs Computer (Human first)!");
                 break;
             case 3:
                 player1 = new ComputerPlayer('X');
                 player2 = new HumanPlayer('O');
+                System.out.println("\nComputer vs Human (Computer first)!");
                 break;
         }
 
         boolean gameWon = false;
-        
-        // Only print empty board if human goes first
-        if (gameChoice != 3) {
-            board.printBoardWithNumbers();
-        }
+        Player currentPlayer = player1;
 
         while (!gameWon && !board.isFull()) {
-            // Player 1 move
-            if (player1 instanceof ComputerPlayer) {
-                System.out.println("\nComputer player:");
-            }
-            int move1 = player1.makeMove(board);
-            board.setCell(move1, player1.getSymbol());
-            board.printBoardWithNumbers();
-            if (board.checkWin(player1.getSymbol())) {
-                System.out.println("Player 1 (" + player1.getSymbol() + ") wins!");
-                gameWon = true;
-                break;
+            System.out.println("\n--- " + 
+                (currentPlayer == player1 ? "Player 1 (X)" : "Player 2 (O)") + 
+                " turn ---");
+
+            if (currentPlayer instanceof HumanPlayer) {
+                board.printBoardWithNumbers();
             }
 
-            if (board.isFull()) break;
-
-            // Player 2 move
-            if (player2 instanceof ComputerPlayer) {
-                System.out.println("\nComputer player:");
-            }
-            int move2 = player2.makeMove(board);
-            board.setCell(move2, player2.getSymbol());
+            int move = currentPlayer.makeMove(board);
+            board.setCell(move, currentPlayer.getSymbol());
             board.printBoardWithNumbers();
-            if (board.checkWin(player2.getSymbol())) {
-                System.out.println("Player 2 (" + player2.getSymbol() + ") wins!");
+
+            if (board.checkWin(currentPlayer.getSymbol())) {
+                System.out.println(currentPlayer == player1 ? 
+                    "Player 1 (X) wins!" : "Player 2 (O) wins!");
                 gameWon = true;
             }
+
+            currentPlayer = (currentPlayer == player1) ? player2 : player1;
         }
 
         if (!gameWon) {

@@ -13,20 +13,19 @@ public class HumanPlayer implements Player {
 
     @Override
     public int makeMove(Board board) {
-        int pos;
         while (true) {
             System.out.print("Enter position (1-9): ");
-            if (scanner.hasNextInt()) {
-                pos = scanner.nextInt();
+            String input = scanner.next();
+            try {
+                int pos = Integer.parseInt(input);
                 if (pos >= 1 && pos <= 9 && board.isCellEmpty(pos)) {
-                    break;
+                    return pos;
                 }
-            } else {
-                scanner.next(); // consume invalid input
+            } catch (NumberFormatException e) {
+                // Not an integer
             }
-            System.out.println("Invalid or occupied position. Try again.");
+            System.out.println("Invalid input! Please enter an available number (1-9).");
         }
-        return pos;
     }
 
     @Override
